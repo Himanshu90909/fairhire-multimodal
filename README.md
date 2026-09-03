@@ -26,6 +26,7 @@ The project does **not** infer protected attributes from faces, voices, or names
 - [`research-proposal.md`](research-proposal.md): Full research proposal, literature grounding, hypotheses, method, metrics, timeline, risks, and expected contributions.
 - [`experiment-plan.md`](experiment-plan.md): Reproducible implementation plan, ablations, data schema, evaluation protocol, and suggested Python package structure.
 - [`REVIEW_AND_FIXES.md`](REVIEW_AND_FIXES.md): Advanced audit of the first version, identified mistakes, and the scientific corrections applied.
+- [`FUNDING_PITCH.md`](FUNDING_PITCH.md): Sponsor-facing request with staged funding, INR budget, milestones, expected value, and risk controls.
 
 ## Status
 
