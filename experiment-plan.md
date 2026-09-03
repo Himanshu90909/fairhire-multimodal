@@ -110,7 +110,15 @@ Start with a simple interpretable gate. Train or estimate incremental validity f
 - accessibility and policy approval;
 - no dependence on prohibited or explicitly non-evidence features.
 
-The gate should be evaluated on a held-out set. Do not tune thresholds on the final test set.
+The gate should be evaluated on a held-out set. Do not tune thresholds on the final test set. Use nested validation when the gate, calibrator, or abstention threshold is learned: development data selects the model family, validation data selects thresholds, and the locked test set is scored once.
+
+## Decision-policy separation
+
+A model score is not itself a hiring decision. Define a review-capacity or threshold policy before computing selection-rate or adverse-impact metrics. Report score-level disparity separately from decision-level disparity. If no valid decision policy or outcome label exists, report calibration, error gaps, and counterfactual sensitivity but do not claim adverse impact.
+
+## Fairness budget and abstention tests
+
+Configure a per-competency budget for counterfactual score change, worst-group error gap, calibration gap, and uncertainty. Run sensitivity analysis at strict, moderate, and permissive budget levels. The system must return an explicit abstention state when a budget is exceeded or evidence is insufficient. Measure coverage, abstention rate, subgroup abstention gaps, and the validity of the cases that remain scored.
 
 ## Evaluation pseudocode
 

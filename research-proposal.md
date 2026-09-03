@@ -1,4 +1,4 @@
-# FairHire-Multimodal: A Causal, Retrieval-Grounded, and Drift-Aware Framework for Auditing Multimodal AI-Assisted Hiring
+# FairHire-Multimodal: A Counterfactual, Retrieval-Grounded, and Drift-Aware Framework for Auditing Multimodal AI-Assisted Hiring
 
 **Research proposal for the SHL Research Intern, AI role (VN4469)**  
 **Author:** Manus AI  
@@ -9,7 +9,7 @@
 
 AI-assisted hiring increasingly combines language, speech, vision, large language models, and production monitoring. The central research risk is not only whether a model predicts a job-relevant outcome, but whether its output changes when irrelevant identity or communication-style signals change. This proposal introduces **FairHire-Multimodal**, a research framework for measuring and reducing such sensitivity while preserving job-related validity.
 
-The framework makes four advances. First, it separates **construct validity** from **surface-form sensitivity** by evaluating matched counterfactual candidate records in which names, educational institutions, dialect-linked linguistic features, acoustic conditions, and non-job-relevant visual cues are changed while evidence of job-related competence is held constant. Second, it uses **retrieval-augmented generation (RAG)** over a competency ontology and behaviorally anchored rating scales so that explanations are traceable to predefined job-relevant evidence rather than unconstrained model intuition. Third, it proposes a **multimodal gating policy** that admits each modality only when incremental validity and subgroup robustness justify its use. Fourth, it integrates a **deployment monitor** for subgroup performance, adverse impact, calibration, explanation stability, and data/model drift.
+The framework makes five advances. First, it separates **construct validity** from **surface-form sensitivity** by evaluating matched counterfactual candidate records in which names, educational institutions, dialect-linked linguistic features, acoustic conditions, and non-job-relevant visual cues are changed while evidence of job-related competence is held constant. Second, it uses **retrieval-augmented generation (RAG)** over a competency ontology and behaviorally anchored rating scales so that explanations are traceable to predefined job-relevant evidence rather than unconstrained model intuition. Third, it proposes a **multimodal gating policy** that admits each modality only when incremental validity and subgroup robustness justify its use. Fourth, it integrates a **deployment monitor** for subgroup performance, adverse impact, calibration, explanation stability, and data/model drift. Fifth, it introduces a **fairness budget with abstention**: a modality or score is blocked when its uncertainty or disparity exceeds a pre-registered budget, rather than being forced into a ranking.
 
 The primary outcome is a reproducible benchmark and prototype showing when multimodal AI adds legitimate predictive signal and when it introduces avoidable disparity. The project is tightly aligned with SHL’s Research Intern, AI brief, which calls for work in NLP, speech, computer vision, generative AI, RAG, orchestration, scalable production models, annotation, fairness, and research documentation. The proposed result is suitable for an internal technical report and, subject to data access and ethics approval, a workshop or conference paper.
 
@@ -55,7 +55,7 @@ These properties can conflict. Removing all language variation may erase legitim
 | --- | --- | --- |
 | H1 | RAG grounding reduces unsupported rationale claims and improves explanation faithfulness compared with an unconstrained LLM judge. | Compare citation precision, evidence sufficiency, and expert-rated rationale quality. |
 | H2 | A multimodal model does not uniformly outperform text-only models; gains are construct- and subgroup-dependent. | Paired bootstrap comparisons of validity and subgroup performance across modality sets. |
-| H3 | Counterfactual perturbations of irrelevant identity cues cause smaller score changes under the proposed gating and adversarial-invariance layer. | Estimate counterfactual sensitivity and permutation-based confidence intervals. |
+| H3 | Counterfactual perturbations of irrelevant identity cues cause smaller score changes under the proposed evidence gate and fairness budget. | Estimate counterfactual sensitivity and permutation-based confidence intervals. |
 | H4 | Fairness-aware calibration can reduce group disparities with a bounded loss in overall validity. | Plot Pareto frontiers of validity versus disparity under multiple post-processing policies. |
 | H5 | Explanation stability is an early warning signal for model drift and fairness degradation. | Relate changes in evidence attribution and subgroup metrics over simulated temporal shifts. |
 
@@ -99,7 +99,15 @@ G(m,c)=1 \quad \text{if} \quad \Delta V_{m,c} > \tau_V,
 
 Here, \(\Delta V\) is incremental validity over the approved baseline, \(\Delta F\) is incremental disparity or counterfactual sensitivity, \(R\) is reliability, and \(A\) is an accessibility and policy approval indicator. The thresholds are selected before test-set evaluation. This prevents the system from using facial appearance, vocal identity, or other sensitive proxies merely because they improve in-sample prediction.
 
-### 4.4 Fairness and drift as one monitoring problem
+This is a **counterfactual audit**, not a causal estimate of real-world hiring effects. The transformation is interpreted as an intervention on a recorded surface cue only under an explicit semantic-preservation check. Claims about causal impact on employment outcomes require a separate prospective validation design.
+
+### 4.4 Fairness budget and abstention
+
+For every competency, define a budget for counterfactual score change, subgroup error gap, calibration gap, and uncertainty. The system may produce a ranking only when the relevant budget is satisfied. Otherwise, it returns an abstention state such as `insufficient_evidence`, `modality_not_approved`, or `fairness_review_required`. This creates a safer alternative to silently applying a generic fairness threshold across jobs with different constructs and base rates.
+
+The budget is reported as a policy choice, not as a universal definition of fairness. Sensitivity analysis should show how conclusions change under stricter and looser budgets.
+
+### 4.5 Fairness and drift as one monitoring problem
 
 The monitor treats fairness as longitudinal. It tracks subgroup score distributions, selection-rate ratios, calibration, error rates, counterfactual sensitivity, missingness, modality availability, and explanation changes. A model can pass a static audit and fail after job mix, candidate population, recording devices, or language distribution changes. The monitor therefore raises alerts on both statistical drift and fairness drift.
 
